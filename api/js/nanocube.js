@@ -1,5 +1,34 @@
 var Nanocube = {};
 
+// A buffer which stores the interaction requests.
+var log_buffer = new Array();
+
+// Max number of elements that can be stored inside the buffer.
+var log_buffer_size = 16;
+
+// A dummy function which only sends the requests to log server only.
+function sendajax_logserver(url) {
+
+	// Add the elements to the buffer.
+	log_buffer[log_buffer.length] = {"timestamp":Date.now(), "url":url};
+
+	if(log_buffer.length >= log_buffer_size) {
+		flush_log();
+	}
+}
+
+// Function which flushes the buffer data to server.
+// NOTE : JSON.stringify() will not work on IE6/7 curses !
+function flush_log() {
+	// Package everything into a json.
+	log_json = JSON.stringify({"elements":log_buffer});
+	log_buffer = new Array();
+	console.log(log_json);
+
+   	$.ajax({url: LOGURL+"?d="+log_json+"&s="+_SESSION_ID+"", success: function(result){
+   	}});
+}
+
 function binary_xhr(url, handler)
 {
     var xhr = new window.XMLHttpRequest();
@@ -26,6 +55,8 @@ function binary_xhr(url, handler)
     xhr.open("GET", url, true);
     xhr.responseType="arraybuffer";
     xhr.send();
+
+	sendajax_logserver(url);
 };
 
 Nanocube.diff_queries = function(q1, q2)
@@ -209,6 +240,7 @@ Nanocube.create = function(opts)
             this_url = this_url + where_subquery(opts.where);
             this_url = this_url + when_subquery(opts.when);
             d3.json(this_url, function(data) { k(data); });
+			sendajax_logserver(this_url);
         },
         selection: function() {
             var nanocube = this;

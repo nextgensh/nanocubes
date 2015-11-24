@@ -6,6 +6,9 @@ var brush, point_batch, globe;
 var canvas;
 var gl, interactor;
 
+// A simple function which is used to maintain the session variable for this user.
+var _SESSION_ID = Date.now()+"_"+(Math.random()*Math.pow(10,17));
+
 function init_ui()
 {
     canvas = document.getElementById("webgl");
@@ -46,6 +49,11 @@ function init_ui()
         point_batch && (point_batch._dirty = true);
         Lux.Scene.invalidate();
     });
+
+	window.onbeforeunload = function() {
+		// Flush the log buffer before we close the browser window.
+		flush_log();
+	}
 
     // prevent right-click context menu
     canvas.addEventListener('contextmenu', function(ev) {

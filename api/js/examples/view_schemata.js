@@ -1,3 +1,5 @@
+LOGURL = "http://localhost:3000/",
+
 var view_schemata = {
 
     "flights": { 
@@ -49,7 +51,7 @@ var view_schemata = {
     },
 
     "brightkite": {
-        url: "http://127.0.0.1:29512",
+		url: "http://nanocubes.net/nanocube/14/",
         title: "Brightkite Checkins",
         center: { lat: 0, lon: 0, zoom: 1 },
         time_range: [ new Date(2008,0,1), new Date(2010, 11, 1) ],
