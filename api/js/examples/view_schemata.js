@@ -1,4 +1,4 @@
-LOGURL = "http://localhost:3000/",
+var LOGURL = "http://localhost:3000/";
 
 var view_schemata = {
 
