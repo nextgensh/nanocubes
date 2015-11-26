@@ -11,16 +11,23 @@ var db = new sqlite3.Database('database');
 // and client requests will be on the same domain.
 app.use(cors());
 
+// Create the database table if it does not already exist.
+db.serialize(function (){
+	db.run("CREATE TABLE IF NOT EXISTS interactions(url char(128) default null, session_id char(128), timestamp long);");
+});
+
 // Build the statement used for inserting data.
 var insert = db.prepare("insert into interactions values (?, ?, ?)");
 
 app.get('/', function (req, res) {	
-	/*
 	if(req.query.d && req.query.s) {
-			insert.run(req.query.d, req.query.s, Date.now());
+		var data = JSON.parse(req.query.d);
+		var elements = data.elements;
+		// Add the contents to the database.
+		for(var a=0; a < elements.length; a++) {
+			insert.run(elements[a].url, req.query.s, elements[a].timestamp);
+		}
 	}
-	*/
-	console.log(req.query.d);
 	res.send("OK");
 });
 
